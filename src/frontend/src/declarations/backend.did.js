@@ -8,15 +8,38 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
-export const Time = IDL.Int;
-export const Booking = IDL.Record({
+export const _CaffeineStorageCreateCertificateResult = IDL.Record({
+  'method' : IDL.Text,
+  'blob_hash' : IDL.Text,
+});
+export const _CaffeineStorageRefillInformation = IDL.Record({
+  'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+});
+export const _CaffeineStorageRefillResult = IDL.Record({
+  'success' : IDL.Opt(IDL.Bool),
+  'topped_up_amount' : IDL.Opt(IDL.Nat),
+});
+export const ExternalBlob = IDL.Vec(IDL.Nat8);
+export const BookingInput = IDL.Record({
   'gamePackage' : IDL.Text,
-  'date' : Time,
+  'date' : IDL.Text,
   'name' : IDL.Text,
   'message' : IDL.Opt(IDL.Text),
   'phone' : IDL.Text,
+  'screenshot' : IDL.Opt(ExternalBlob),
   'groupSize' : IDL.Nat,
 });
+export const Booking = IDL.Record({
+  'bookingId' : IDL.Text,
+  'gamePackage' : IDL.Text,
+  'date' : IDL.Text,
+  'name' : IDL.Text,
+  'message' : IDL.Opt(IDL.Text),
+  'phone' : IDL.Text,
+  'screenshot' : IDL.Opt(ExternalBlob),
+  'groupSize' : IDL.Nat,
+});
+export const Time = IDL.Int;
 export const Score = IDL.Record({
   'date' : Time,
   'game' : IDL.Text,
@@ -25,11 +48,34 @@ export const Score = IDL.Record({
 });
 
 export const idlService = IDL.Service({
-  'addBooking' : IDL.Func(
-      [IDL.Text, IDL.Text, Time, IDL.Text, IDL.Nat, IDL.Opt(IDL.Text)],
+  '_caffeineStorageBlobIsLive' : IDL.Func(
+      [IDL.Vec(IDL.Nat8)],
+      [IDL.Bool],
+      ['query'],
+    ),
+  '_caffeineStorageBlobsToDelete' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
+      ['query'],
+    ),
+  '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+      [IDL.Vec(IDL.Vec(IDL.Nat8))],
       [],
       [],
     ),
+  '_caffeineStorageCreateCertificate' : IDL.Func(
+      [IDL.Text],
+      [_CaffeineStorageCreateCertificateResult],
+      [],
+    ),
+  '_caffeineStorageRefillCashier' : IDL.Func(
+      [IDL.Opt(_CaffeineStorageRefillInformation)],
+      [_CaffeineStorageRefillResult],
+      [],
+    ),
+  '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+  'addBooking' : IDL.Func([BookingInput], [IDL.Text], []),
+  'deleteBooking' : IDL.Func([IDL.Text], [], []),
   'getBookings' : IDL.Func([], [IDL.Vec(Booking)], ['query']),
   'getGlobalLeaderboard' : IDL.Func([], [IDL.Vec(Score)], ['query']),
   'getLeaderboard' : IDL.Func([IDL.Text], [IDL.Vec(Score)], ['query']),
@@ -39,15 +85,38 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
-  const Time = IDL.Int;
-  const Booking = IDL.Record({
+  const _CaffeineStorageCreateCertificateResult = IDL.Record({
+    'method' : IDL.Text,
+    'blob_hash' : IDL.Text,
+  });
+  const _CaffeineStorageRefillInformation = IDL.Record({
+    'proposed_top_up_amount' : IDL.Opt(IDL.Nat),
+  });
+  const _CaffeineStorageRefillResult = IDL.Record({
+    'success' : IDL.Opt(IDL.Bool),
+    'topped_up_amount' : IDL.Opt(IDL.Nat),
+  });
+  const ExternalBlob = IDL.Vec(IDL.Nat8);
+  const BookingInput = IDL.Record({
     'gamePackage' : IDL.Text,
-    'date' : Time,
+    'date' : IDL.Text,
     'name' : IDL.Text,
     'message' : IDL.Opt(IDL.Text),
     'phone' : IDL.Text,
+    'screenshot' : IDL.Opt(ExternalBlob),
     'groupSize' : IDL.Nat,
   });
+  const Booking = IDL.Record({
+    'bookingId' : IDL.Text,
+    'gamePackage' : IDL.Text,
+    'date' : IDL.Text,
+    'name' : IDL.Text,
+    'message' : IDL.Opt(IDL.Text),
+    'phone' : IDL.Text,
+    'screenshot' : IDL.Opt(ExternalBlob),
+    'groupSize' : IDL.Nat,
+  });
+  const Time = IDL.Int;
   const Score = IDL.Record({
     'date' : Time,
     'game' : IDL.Text,
@@ -56,11 +125,34 @@ export const idlFactory = ({ IDL }) => {
   });
   
   return IDL.Service({
-    'addBooking' : IDL.Func(
-        [IDL.Text, IDL.Text, Time, IDL.Text, IDL.Nat, IDL.Opt(IDL.Text)],
+    '_caffeineStorageBlobIsLive' : IDL.Func(
+        [IDL.Vec(IDL.Nat8)],
+        [IDL.Bool],
+        ['query'],
+      ),
+    '_caffeineStorageBlobsToDelete' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
+        ['query'],
+      ),
+    '_caffeineStorageConfirmBlobDeletion' : IDL.Func(
+        [IDL.Vec(IDL.Vec(IDL.Nat8))],
         [],
         [],
       ),
+    '_caffeineStorageCreateCertificate' : IDL.Func(
+        [IDL.Text],
+        [_CaffeineStorageCreateCertificateResult],
+        [],
+      ),
+    '_caffeineStorageRefillCashier' : IDL.Func(
+        [IDL.Opt(_CaffeineStorageRefillInformation)],
+        [_CaffeineStorageRefillResult],
+        [],
+      ),
+    '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
+    'addBooking' : IDL.Func([BookingInput], [IDL.Text], []),
+    'deleteBooking' : IDL.Func([IDL.Text], [], []),
     'getBookings' : IDL.Func([], [IDL.Vec(Booking)], ['query']),
     'getGlobalLeaderboard' : IDL.Func([], [IDL.Vec(Score)], ['query']),
     'getLeaderboard' : IDL.Func([IDL.Text], [IDL.Vec(Score)], ['query']),
